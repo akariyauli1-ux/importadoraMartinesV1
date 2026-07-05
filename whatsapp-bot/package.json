@@ -1,0 +1,13 @@
+{
+  "name": "whatsapp-bot-importadora-martinez",
+  "version": "1.0.0",
+  "description": "WhatsApp Bot for Importadora Martinez using wppconnect",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "@wppconnect-team/wppconnect": "^1.32.4",
+    "mysql2": "^3.9.2"
+  }
+}
