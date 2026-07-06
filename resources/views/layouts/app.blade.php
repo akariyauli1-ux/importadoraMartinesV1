@@ -76,6 +76,11 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('gerente.reportes') }}" class="nav-link {{ request()->routeIs('gerente.reportes') ? 'active' : '' }}" @click="mobileSidebarOpen = false">
+                                📊 Reportes y Rendimiento
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('gerente.branding') }}" class="nav-link {{ request()->routeIs('gerente.branding') ? 'active' : '' }}" @click="mobileSidebarOpen = false">
                                 🎨 Identidad / Branding
                             </a>

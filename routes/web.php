@@ -38,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/gerente/sucursales', \App\Livewire\Gerente\Sucursales::class)->name('gerente.sucursales');
             Route::get('/gerente/rrhh', \App\Livewire\Gerente\Rrhh::class)->name('gerente.rrhh');
             Route::get('/gerente/branding', \App\Livewire\Gerente\Branding::class)->name('gerente.branding');
+            Route::get('/gerente/reportes', \App\Livewire\Gerente\Reportes::class)->name('gerente.reportes');
         });
 
         // Administrador Routes
