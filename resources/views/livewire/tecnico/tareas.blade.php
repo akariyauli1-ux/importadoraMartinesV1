@@ -1,7 +1,6 @@
 <div>
     @section('title', 'Mis Reparaciones Asignadas')
 
-    <!-- Saturation Warning -->
     @if($activasCount >= 4)
         <div class="alert alert-danger" style="margin-bottom: 25px;">
             <span>⚠️ <strong>ATENCIÓN:</strong> Has alcanzado tu límite máximo de 4 órdenes activas. No se te asignarán más equipos hasta que liberes o finalices tus tareas actuales (Regla #1).</span>
@@ -10,7 +9,6 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: start;">
         
-        <!-- Left: Tasks List -->
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">Equipos Asignados ({{ $activasCount }} / 4 Activos)</h4>
@@ -82,10 +80,9 @@
             </div>
         </div>
 
-        <!-- Right: Diagnostic Form -->
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Formulario de Diagnóstico Obligatorio</h4>
+                <h4 class="card-title">Formulario de Diagnóstico</h4>
             </div>
             <div class="card-body">
                 @if($selectedOrderId)
@@ -104,21 +101,34 @@
                                 Checklist Técnico (Categoría: {{ strtoupper($ordSel->categoria) }})
                             </h5>
 
-                            <!-- Dynamic fields -->
-                            <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px;">
+                            <!-- Dynamic radio fields -->
+                            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px;">
                                 @foreach($diagFields as $field => $value)
-                                    <div class="form-group" style="margin-bottom: 0;">
-                                        <label class="form-label" style="color: var(--color-text-dark); text-transform: capitalize; font-weight: 500;">
+                                    <div class="form-group" style="margin-bottom: 0; padding: 10px; background-color: #fafafa; border-radius: 6px; border: 1px solid var(--border-light);">
+                                        <label class="form-label" style="color: var(--color-text-dark); text-transform: capitalize; font-weight: 600; margin-bottom: 6px;">
                                             {{ str_replace('_', ' ', $field) }}
                                         </label>
-                                        <input wire:model.defer="diagFields.{{ $field }}" type="text" class="form-control form-control-light" placeholder="Ej. Buen estado, rayado, no responde..." required>
-                                        @error("diagFields.{$field}") <span class="error-message">{{ $message }}</span> @enderror
+                                        <div style="display: flex; gap: 15px; margin-top: 4px; flex-wrap: wrap;">
+                                            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-weight: 400; font-size: 0.85rem;">
+                                                <input type="radio" wire:model="diagFields.{{ $field }}" value="buen_estado">
+                                                <span style="color: #28a745;">Buen estado</span>
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-weight: 400; font-size: 0.85rem;">
+                                                <input type="radio" wire:model="diagFields.{{ $field }}" value="mal_estado">
+                                                <span style="color: #dc3545;">Mal estado</span>
+                                            </label>
+                                            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-weight: 400; font-size: 0.85rem;">
+                                                <input type="radio" wire:model="diagFields.{{ $field }}" value="no_corresponde">
+                                                <span style="color: #6c757d;">No corresponde</span>
+                                            </label>
+                                        </div>
+                                        @error("diagFields.{$field}") <span class="error-message" style="margin-top: 4px; display: block;">{{ $message }}</span> @enderror
                                     </div>
                                 @endforeach
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" style="color: var(--color-text-dark); font-weight: 600;">Diagnóstico Técnico y Observaciones Generales</label>
+                                <label class="form-label" style="color: var(--color-text-dark); font-weight: 600;">Diagnóstico Técnico y Observaciones Extras</label>
                                 <textarea wire:model.defer="observaciones" class="form-control form-control-light" rows="3" placeholder="Detalle técnico detallado de la avería..." required></textarea>
                                 @error('observaciones') <span class="error-message">{{ $message }}</span> @enderror
                             </div>
@@ -133,11 +143,79 @@
                             </div>
 
                             <div style="display: flex; gap: 10px; margin-top: 25px; border-top: 1px solid var(--border-light); padding-top: 20px;">
+                                <button type="button" wire:click="generarReporte" class="btn btn-secondary" style="flex-grow: 1; background-color: #6c757d;">
+                                    📋 Generar Reporte de Detalle Técnico
+                                </button>
                                 <button type="submit" class="btn btn-primary" style="flex-grow: 1;">
                                     💾 Guardar Diagnóstico y Enviar Presupuesto
                                 </button>
                             </div>
                         </form>
+
+                        @if($mostrarReporte)
+                            <div style="margin-top: 25px; border: 2px solid var(--color-red); border-radius: 8px; overflow: hidden;">
+                                <div style="background-color: var(--color-red); color: #fff; padding: 12px 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center;">
+                                    <span>📋 Reporte de Detalle Técnico</span>
+                                    <span style="font-size: 0.8rem; font-weight: 400;">Ticket: {{ $ordSel->numero_ticket }}</span>
+                                </div>
+                                <div style="padding: 16px;">
+                                    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                                        <thead>
+                                            <tr style="border-bottom: 2px solid #e9ecef;">
+                                                <th style="text-align: left; padding: 8px 6px; color: #495057; width: 40%;">Componente</th>
+                                                <th style="text-align: left; padding: 8px 6px; color: #495057;">Diagnóstico</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php
+                                                $malEstado = [];
+                                                $buenEstado = [];
+                                                $noCorresponde = [];
+                                                $sinEvaluar = [];
+                                                foreach($diagFields as $f => $v) {
+                                                    if ($v === 'mal_estado') $malEstado[] = $f;
+                                                    elseif ($v === 'buen_estado') $buenEstado[] = $f;
+                                                    elseif ($v === 'no_corresponde') $noCorresponde[] = $f;
+                                                    else $sinEvaluar[] = $f;
+                                                }
+                                            @endphp
+                                            @foreach($diagFields as $f => $v)
+                                                <tr style="border-bottom: 1px solid #f1f3f5;">
+                                                    <td style="padding: 8px 6px; font-weight: 600; text-transform: capitalize;">{{ str_replace('_', ' ', $f) }}</td>
+                                                    <td style="padding: 8px 6px;">
+                                                        @if($v === 'buen_estado')
+                                                            <span style="background-color: #d4edda; color: #155724; padding: 3px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">✅ Buen estado</span>
+                                                        @elseif($v === 'mal_estado')
+                                                            <span style="background-color: #f8d7da; color: #721c24; padding: 3px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">❌ Mal estado</span>
+                                                        @elseif($v === 'no_corresponde')
+                                                            <span style="background-color: #e2e3e5; color: #383d41; padding: 3px 10px; border-radius: 4px; font-size: 0.8rem;">⊘ No corresponde</span>
+                                                        @else
+                                                            <span style="color: #999; font-style: italic;">Sin evaluar</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+
+                                    @if(count($malEstado) > 0)
+                                        <div class="alert alert-danger" style="margin-top: 15px; font-size: 0.85rem;">
+                                            <strong>⚠️ Componentes con mal estado detectados:</strong> {{ implode(', ', array_map(function($f) { return str_replace('_', ' ', $f); }, $malEstado)) }}
+                                        </div>
+                                    @endif
+
+                                    <div style="margin-top: 15px; padding: 12px; background-color: #f8f9fa; border-radius: 6px;">
+                                        <strong style="font-size: 0.85rem; color: var(--color-text-dark); display: block; margin-bottom: 4px;">Observaciones Técnicas:</strong>
+                                        <p style="font-size: 0.85rem; color: #495057; margin: 0; line-height: 1.5;">{{ $observaciones ?: 'Sin observaciones registradas.' }}</p>
+                                    </div>
+
+                                    <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="font-size: 0.82rem; color: var(--color-text-light-muted);">Resumen del diagnóstico</span>
+                                        <span style="font-weight: 700; font-size: 1.1rem; color: var(--color-red);">Presupuesto: Bs. {{ number_format($costo_estimado, 2) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     @else
                         <!-- View Only Mode for Already Diagnosed -->
                         <div style="display: flex; flex-direction: column; gap: 15px;">
@@ -148,7 +226,17 @@
                                     @foreach($diagFields as $key => $val)
                                         <tr>
                                             <td style="font-weight: 600; text-transform: capitalize;">{{ str_replace('_', ' ', $key) }}</td>
-                                            <td>{{ $val }}</td>
+                                            <td>
+                                                @if($val === 'buen_estado')
+                                                    <span style="background-color: #d4edda; color: #155724; padding: 3px 10px; border-radius: 4px; font-size: 0.82rem; font-weight: 600;">✅ Buen estado</span>
+                                                @elseif($val === 'mal_estado')
+                                                    <span style="background-color: #f8d7da; color: #721c24; padding: 3px 10px; border-radius: 4px; font-size: 0.82rem; font-weight: 600;">❌ Mal estado</span>
+                                                @elseif($val === 'no_corresponde')
+                                                    <span style="background-color: #e2e3e5; color: #383d41; padding: 3px 10px; border-radius: 4px; font-size: 0.82rem;">⊘ No corresponde</span>
+                                                @else
+                                                    {{ $val }}
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                     <tr>

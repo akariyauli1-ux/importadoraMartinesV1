@@ -17,19 +17,19 @@ class Tareas extends Component
     public $selectedOrderId = null;
     public $costo_estimado = 0.00;
     
-    // Selective diagnostic fields (dynamically loaded)
     public $diagFields = [];
     public $observaciones = '';
+    public $mostrarReporte = false;
 
     public function selectOrden($id)
     {
         $this->selectedOrderId = $id;
+        $this->mostrarReporte = false;
         $order = OrdenReparacion::findOrFail($id);
         $this->costo_estimado = $order->costo_estimado;
         $this->diagFields = [];
         $this->observaciones = '';
 
-        // Load existing diagnostic details
         $revision = $order->getRevision();
         if ($revision) {
             $this->observaciones = $revision->observaciones ?? '';
@@ -80,39 +80,56 @@ class Tareas extends Component
         }
     }
 
+    public function updated($property)
+    {
+        if (str_starts_with($property, 'diagFields.') || $property === 'observaciones' || $property === 'costo_estimado') {
+            $this->mostrarReporte = false;
+        }
+    }
+
+    public function generarReporte()
+    {
+        $this->mostrarReporte = true;
+    }
+
+    public function estadoLabel($estado)
+    {
+        return match ($estado) {
+            'buen_estado' => 'Buen estado',
+            'mal_estado' => 'Mal estado',
+            'no_corresponde' => 'No corresponde',
+            default => $estado ?: 'Sin evaluar',
+        };
+    }
+
     public function saveDiagnostico()
     {
         $order = OrdenReparacion::findOrFail($this->selectedOrderId);
         
-        // Rule #7: Selective validation (no fields empty)
         $rules = [
             'costo_estimado' => 'required|numeric|min:1',
             'observaciones' => 'required|string|min:5',
         ];
 
         foreach ($this->diagFields as $key => $val) {
-            $rules["diagFields.{$key}"] = 'required|string|min:2';
+            $rules["diagFields.{$key}"] = 'nullable|string';
         }
 
         $this->validate($rules, [
-            'diagFields.*.required' => 'Este punto de diagnóstico es obligatorio.',
             'costo_estimado.min' => 'Debe ingresar un presupuesto estimado mayor a Bs. 0.',
         ]);
 
         DB::beginTransaction();
         try {
-            // 1. Update Revision Details
             $revision = $order->getRevision();
             $updateData = array_merge($this->diagFields, ['observaciones' => $this->observaciones]);
             $revision->update($updateData);
 
-            // 2. Update Order (state waiting for approval - Rule #11)
             $order->update([
                 'costo_estimado' => $this->costo_estimado,
                 'estado' => 'esperando_aprobacion',
             ]);
 
-            // 3. Queue WhatsApp notification with link to approve
             $cliente = $order->cliente;
             $waMessage = "Hola {$cliente->nombre}, tu equipo {$order->marca} {$order->modelo} ya tiene un diagnóstico y presupuesto estimado de Bs. {$this->costo_estimado}. " .
                 "Por motivos legales, requerimos tu firma de aprobación digital para poder iniciar la reparación. Aprueba el presupuesto aquí: " . 
@@ -128,6 +145,7 @@ class Tareas extends Component
 
             session()->flash('success', 'Diagnóstico y presupuesto guardados. Notificación encolada al cliente.');
             $this->selectedOrderId = null;
+            $this->mostrarReporte = false;
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -137,10 +155,8 @@ class Tareas extends Component
 
     public function marcarReparado($id)
     {
-        // Shifting from en_reparacion to reparado
         $order = OrdenReparacion::findOrFail($id);
         
-        // Make sure it is in repair state and approved
         if ($order->estado !== 'en_reparacion') {
             session()->flash('error', 'Solo puede marcar como reparado un equipo que esté en proceso de reparación.');
             return;
@@ -148,7 +164,6 @@ class Tareas extends Component
 
         $order->update(['estado' => 'reparado']);
 
-        // WhatsApp notification
         $cliente = $order->cliente;
         $waMessage = "Buenas noticias {$cliente->nombre}, tu equipo {$order->marca} {$order->modelo} (Ticket {$order->numero_ticket}) ya se encuentra REPARADO y listo para ser retirado. Puedes pasar por nuestra sucursal. Costo final: Bs. {$order->costo_estimado}.";
         

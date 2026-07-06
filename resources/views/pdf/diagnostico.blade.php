@@ -206,7 +206,17 @@
                 @if($component !== 'observaciones')
                     <tr>
                         <td style="font-weight: bold;">{{ str_replace('_', ' ', $component) }}</td>
-                        <td>{{ $state }}</td>
+                        <td>
+                            @if($state === 'buen_estado')
+                                Buen estado
+                            @elseif($state === 'mal_estado')
+                                Mal estado
+                            @elseif($state === 'no_corresponde')
+                                No corresponde
+                            @else
+                                {{ $state ?: 'Sin evaluar' }}
+                            @endif
+                        </td>
                     </tr>
                 @endif
             @endforeach
