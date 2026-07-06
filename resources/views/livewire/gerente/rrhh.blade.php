@@ -48,6 +48,7 @@
                             <option value="Administrador">Administrador (Sede)</option>
                             <option value="Técnico">Técnico (Reparador)</option>
                             <option value="Recepcionista">Recepcionista</option>
+                            <option value="Almacenista">Almacenista</option>
                         </select>
                         @error('rol') <span class="error-message">{{ $message }}</span> @enderror
                     </div>
@@ -138,7 +139,7 @@
                                     </td>
                                     <td>{{ $emp->carnet_identidad }}</td>
                                     <td>
-                                        <span class="badge {{ $emp->hasRole('Gerente') ? 'badge-red' : ($emp->hasRole('Administrador') ? 'badge-black' : 'badge-yellow') }}">
+                                        <span class="badge {{ $emp->hasRole('Gerente') ? 'badge-red' : ($emp->hasRole('Administrador') ? 'badge-black' : ($emp->hasRole('Almacenista') ? 'badge-green' : 'badge-yellow')) }}">
                                             {{ $emp->getRoleNames()->first() ?? 'Sin Rol' }}
                                         </span>
                                     </td>

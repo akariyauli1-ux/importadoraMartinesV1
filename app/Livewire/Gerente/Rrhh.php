@@ -36,7 +36,7 @@ class Rrhh extends Component
             'carnet_identidad' => 'required|string|max:20|unique:users,carnet_identidad,' . $this->empleadoId,
             'email' => 'nullable|email|max:150|unique:users,email,' . $this->empleadoId,
             'sucursal_id' => $this->rol !== 'Gerente' ? 'required|exists:sucursales,id' : 'nullable',
-            'rol' => 'required|string|in:Gerente,Administrador,Técnico,Recepcionista',
+            'rol' => 'required|string|in:Gerente,Administrador,Técnico,Recepcionista,Almacenista',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // JPG/PNG and <2MB
         ];
     }

@@ -106,6 +106,37 @@
                 <div class="stat-icon">📦</div>
             </div>
         @endif
+
+        @if(auth()->user()->hasRole('Almacenista'))
+            <div class="stat-card">
+                <div>
+                    <span class="stat-label">Repuestos Enviados</span>
+                    <h3 class="stat-value">{{ $stats['solicitudes_enviadas'] ?? 0 }}</h3>
+                </div>
+                <div class="stat-icon">📦</div>
+            </div>
+            <div class="stat-card">
+                <div>
+                    <span class="stat-label">Pendientes</span>
+                    <h3 class="stat-value">{{ $stats['solicitudes_pendientes'] ?? 0 }}</h3>
+                </div>
+                <div class="stat-icon">⏳</div>
+            </div>
+            <div class="stat-card">
+                <div>
+                    <span class="stat-label">Agotados</span>
+                    <h3 class="stat-value">{{ $stats['solicitudes_agotadas'] ?? 0 }}</h3>
+                </div>
+                <div class="stat-icon">📭</div>
+            </div>
+            <div class="stat-card">
+                <div>
+                    <span class="stat-label">No Existen</span>
+                    <h3 class="stat-value">{{ $stats['solicitudes_no_existen'] ?? 0 }}</h3>
+                </div>
+                <div class="stat-icon">🚫</div>
+            </div>
+        @endif
     </div>
 
     <!-- Status Overview Card -->

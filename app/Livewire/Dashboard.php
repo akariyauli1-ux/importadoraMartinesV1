@@ -7,6 +7,7 @@ use App\Models\OrdenReparacion;
 use App\Models\Sucursal;
 use App\Models\User;
 use App\Models\Cliente;
+use App\Models\SolicitudRepuesto;
 use Illuminate\Support\Facades\Auth;
 
 class Dashboard extends Component
@@ -67,10 +68,16 @@ class Dashboard extends Component
             }
 
             if ($user->hasRole('Recepcionista')) {
-                // Receptionist performance today
                 $stats['mis_ingresos_hoy'] = OrdenReparacion::where('recepcionista_id', $user->id)
                     ->whereDate('created_at', today())
                     ->count();
+            }
+
+            if ($user->hasRole('Almacenista')) {
+                $stats['solicitudes_enviadas'] = SolicitudRepuesto::where('sucursal_id', $sucursalId)->where('estado', 'enviado')->count();
+                $stats['solicitudes_pendientes'] = SolicitudRepuesto::where('sucursal_id', $sucursalId)->where('estado', 'pendiente')->count();
+                $stats['solicitudes_agotadas'] = SolicitudRepuesto::where('sucursal_id', $sucursalId)->where('estado', 'agotado')->count();
+                $stats['solicitudes_no_existen'] = SolicitudRepuesto::where('sucursal_id', $sucursalId)->where('estado', 'no_existe')->count();
             }
         }
 
