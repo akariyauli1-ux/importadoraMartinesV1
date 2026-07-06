@@ -6,6 +6,7 @@
     <title>Importadora Martinez | Taller</title>
     <!-- Custom Premium CSS -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <!-- Alpine JS is loaded by Livewire, so we can write basic Alpine logic if needed -->
     @livewireStyles
 </head>
@@ -198,5 +199,6 @@
         @livewire('solicitar-repuesto')
     @endif
     @livewireScripts
+    @stack('scripts')
 </body>
 </html>
