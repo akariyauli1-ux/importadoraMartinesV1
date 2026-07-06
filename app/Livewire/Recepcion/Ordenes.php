@@ -28,6 +28,7 @@ class Ordenes extends Component
         $this->selectedOrderId = $orderId;
         $this->firma_checkout = '';
         $this->mostrarModalCheckout = true;
+        $this->dispatch('init-checkout-canvas');
     }
 
     public function entregar()

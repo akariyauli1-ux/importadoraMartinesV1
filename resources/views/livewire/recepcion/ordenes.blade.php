@@ -129,11 +129,10 @@
                 </div>
                 <div class="card-body" style="text-align: center;">
                     <p style="color: var(--color-text-light-muted); font-size: 0.88rem; margin-bottom: 20px;">
-                        Para proceder con la entrega física del equipo reparado, el cliente debe firmar digitalmente la constancia de conformidad de Check-out.
+                        Para proceder con la entrega física del equipo, el cliente debe firmar digitalmente la constancia de conformidad.
                     </p>
 
                     <form wire:submit.prevent="entregar" id="checkout-form">
-                        
                         <input type="hidden" id="firma_checkout_hidden" wire:model.defer="firma_checkout">
 
                         <div class="sig-pad-wrapper" style="margin: 0 auto 15px auto;">
@@ -159,99 +158,92 @@
                                 Cancelar
                             </button>
                             <button type="submit" class="btn btn-primary" style="width: auto;">
-                                📦 Registrar Entrega y Salida
+                                📦 Registrar Entrega
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
-        <script>
-            // Delayed canvas script run to wait for modal visibility in DOM
-            setTimeout(() => {
-                const canvas = document.getElementById('checkout-canvas');
-                const clearBtn = document.getElementById('clear-checkout-sig-btn');
-                const form = document.getElementById('checkout-form');
-                const hiddenInput = document.getElementById('firma_checkout_hidden');
-
-                if (!canvas) return;
-                const ctx = canvas.getContext('2d');
-                
-                function resizeCanvas() {
-                    const rect = canvas.getBoundingClientRect();
-                    canvas.width = rect.width;
-                    canvas.height = rect.height;
-                    ctx.strokeStyle = '#000000';
-                    ctx.lineWidth = 2.5;
-                    ctx.lineCap = 'round';
-                }
-
-                resizeCanvas();
-
-                let drawing = false;
-                let lastX = 0;
-                let lastY = 0;
-
-                function getCoordinates(e) {
-                    const rect = canvas.getBoundingClientRect();
-                    if (e.touches && e.touches.length > 0) {
-                        return {
-                            x: e.touches[0].clientX - rect.left,
-                            y: e.touches[0].clientY - rect.top
-                        };
-                    }
-                    return {
-                        x: e.clientX - rect.left,
-                        y: e.clientY - rect.top
-                    };
-                }
-
-                function startDrawing(e) {
-                    drawing = true;
-                    const coords = getCoordinates(e);
-                    lastX = coords.x;
-                    lastY = coords.y;
-                    ctx.beginPath();
-                    ctx.moveTo(lastX, lastY);
-                    e.preventDefault();
-                }
-
-                function draw(e) {
-                    if (!drawing) return;
-                    const coords = getCoordinates(e);
-                    ctx.lineTo(coords.x, coords.y);
-                    ctx.stroke();
-                    lastX = coords.x;
-                    lastY = coords.y;
-                    e.preventDefault();
-                }
-
-                canvas.addEventListener('mousedown', startDrawing);
-                canvas.addEventListener('mousemove', draw);
-                canvas.addEventListener('mouseup', () => drawing = false);
-                canvas.addEventListener('mouseleave', () => drawing = false);
-
-                canvas.addEventListener('touchstart', startDrawing);
-                canvas.addEventListener('touchmove', draw);
-                canvas.addEventListener('touchend', () => drawing = false);
-
-                clearBtn.addEventListener('click', () => {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    hiddenInput.value = '';
-                    @this.set('firma_checkout', '');
-                });
-
-                form.addEventListener('submit', () => {
-                    const dataUrl = canvas.toDataURL();
-                    @this.set('firma_checkout', dataUrl);
-                });
-
-                window.addEventListener('clear-checkout-sig-pad', () => {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    hiddenInput.value = '';
-                });
-            }, 100);
-        </script>
     @endif
 </div>
+
+<script>
+    function initCheckoutCanvas() {
+        const canvas = document.getElementById('checkout-canvas');
+        if (!canvas) return;
+        if (canvas._initialized) return;
+        canvas._initialized = true;
+
+        const clearBtn = document.getElementById('clear-checkout-sig-btn');
+        const form = document.getElementById('checkout-form');
+        const hiddenInput = document.getElementById('firma_checkout_hidden');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return;
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+        }
+        resizeCanvas();
+
+        let drawing = false, lastX = 0, lastY = 0;
+
+        function getCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            if (e.touches && e.touches.length > 0) {
+                return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+            }
+            return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        }
+
+        function startDrawing(e) {
+            drawing = true;
+            const c = getCoordinates(e);
+            lastX = c.x; lastY = c.y;
+            ctx.beginPath(); ctx.moveTo(lastX, lastY);
+            e.preventDefault();
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+            const c = getCoordinates(e);
+            ctx.lineTo(c.x, c.y); ctx.stroke();
+            lastX = c.x; lastY = c.y;
+            e.preventDefault();
+        }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', () => drawing = false);
+        canvas.addEventListener('mouseleave', () => drawing = false);
+        canvas.addEventListener('touchstart', startDrawing);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', () => drawing = false);
+
+        if (clearBtn) clearBtn.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (hiddenInput) hiddenInput.value = '';
+            @this.set('firma_checkout', '');
+        });
+
+        if (form) form.addEventListener('submit', () => {
+            @this.set('firma_checkout', canvas.toDataURL());
+        });
+    }
+
+    function resetCheckoutCanvas() {
+        const c = document.getElementById('checkout-canvas');
+        if (c) { c._initialized = false; c.getContext('2d').clearRect(0, 0, c.width, c.height); }
+    }
+
+    window.addEventListener('init-checkout-canvas', () => {
+        setTimeout(() => { resetCheckoutCanvas(); initCheckoutCanvas(); }, 200);
+    });
+
+    window.addEventListener('clear-checkout-sig-pad', () => resetCheckoutCanvas());
+</script>
