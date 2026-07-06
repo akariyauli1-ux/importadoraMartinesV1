@@ -34,6 +34,7 @@ class Checkin extends Component
     public $fotos_evidencia = [];
     public $firma_checkin = ''; // base64 string
     public $sin_fotos_motivo = false; // Waiver/rejection checkbox
+    public $enviarWhatsapp = true;
 
     protected $rules = [
         'cliente_nombre' => 'required|string|max:150',
@@ -162,16 +163,18 @@ class Checkin extends Component
                 }
             }
 
-            // 7. Enqueue WhatsApp notification
-            $waMessage = "Hola {$cliente->nombre}, tu equipo {$this->marca} {$this->modelo} ha sido recibido en IMPORTADORA MARTINEZ. " .
-                "Número de ticket: {$ticketNumber}. Puedes seguir el estado y aprobar el presupuesto en tiempo real aquí: " . 
-                route('cliente.orden', $ticketNumber);
-            
-            MensajeWhatsappPendiente::create([
-                'orden_reparacion_id' => $orden->id,
-                'telefono' => $cliente->telefono,
-                'mensaje' => $waMessage,
-            ]);
+            // 7. Enqueue WhatsApp notification (opcional)
+            if ($this->enviarWhatsapp) {
+                $waMessage = "Hola {$cliente->nombre}, tu equipo {$this->marca} {$this->modelo} ha sido recibido en IMPORTADORA MARTINEZ. " .
+                    "Número de ticket: {$ticketNumber}. Puedes seguir el estado y aprobar el presupuesto en tiempo real aquí: " . 
+                    route('cliente.orden', $ticketNumber);
+                
+                MensajeWhatsappPendiente::create([
+                    'orden_reparacion_id' => $orden->id,
+                    'telefono' => $cliente->telefono,
+                    'mensaje' => $waMessage,
+                ]);
+            }
 
             DB::commit();
 

@@ -143,6 +143,13 @@
                         </div>
                         @error('firma_checkout') <span class="error-message" style="display: block; margin-bottom: 15px;">{{ $message }}</span> @enderror
 
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px; padding: 10px; background-color: #f8f9fa; border-radius: 6px;">
+                            <input type="checkbox" wire:model="enviarWhatsapp" id="chk-whatsapp" style="width: 18px; height: 18px; cursor: pointer;">
+                            <label for="chk-whatsapp" style="font-size: 0.85rem; cursor: pointer; color: var(--color-text-dark); margin: 0;">
+                                Enviar notificación de entrega por WhatsApp al cliente
+                            </label>
+                        </div>
+
                         <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid var(--border-light); padding-top: 20px;">
                             <button type="button" wire:click="cerrarCheckout" class="btn btn-secondary" style="width: auto;">
                                 Cancelar

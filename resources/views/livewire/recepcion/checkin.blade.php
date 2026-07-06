@@ -137,6 +137,13 @@
                     @error('firma_checkin') <span class="error-message" style="margin-bottom: 15px;">{{ $message }}</span> @enderror
                 </div>
 
+                <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px; padding: 10px; background-color: #f8f9fa; border-radius: 6px; max-width: 350px; margin-left: auto; margin-right: auto;">
+                    <input type="checkbox" wire:model="enviarWhatsapp" id="chk-whatsapp-checkin" style="width: 18px; height: 18px; cursor: pointer;">
+                    <label for="chk-whatsapp-checkin" style="font-size: 0.85rem; cursor: pointer; color: var(--color-text-dark); margin: 0;">
+                        Enviar notificación de ingreso por WhatsApp al cliente
+                    </label>
+                </div>
+
                 <div style="margin-top: 20px; display: flex; justify-content: center;">
                     <button type="submit" id="save-order-btn" class="btn btn-primary" style="max-width: 350px;">
                         📝 Registrar Ingreso y Asignar

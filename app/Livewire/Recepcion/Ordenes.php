@@ -16,6 +16,7 @@ class Ordenes extends Component
     public $selectedOrderId = null;
     public $firma_checkout = '';
     public $mostrarModalCheckout = false;
+    public $enviarWhatsapp = true;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -48,15 +49,17 @@ class Ordenes extends Component
             'firma_checkout_base64' => $this->firma_checkout,
         ]);
 
-        // WhatsApp notification
-        $cliente = $order->cliente;
-        $waMessage = "Estimado/a {$cliente->nombre}, su equipo {$order->marca} {$order->modelo} (Ticket {$order->numero_ticket}) ha sido entregado de conformidad. ¡Gracias por confiar en IMPORTADORA MARTINEZ!";
-        
-        MensajeWhatsappPendiente::create([
-            'orden_reparacion_id' => $order->id,
-            'telefono' => $cliente->telefono,
-            'mensaje' => $waMessage,
-        ]);
+        // WhatsApp notification (opcional)
+        if ($this->enviarWhatsapp) {
+            $cliente = $order->cliente;
+            $waMessage = "Estimado/a {$cliente->nombre}, su equipo {$order->marca} {$order->modelo} (Ticket {$order->numero_ticket}) ha sido entregado de conformidad. ¡Gracias por confiar en IMPORTADORA MARTINEZ!";
+            
+            MensajeWhatsappPendiente::create([
+                'orden_reparacion_id' => $order->id,
+                'telefono' => $cliente->telefono,
+                'mensaje' => $waMessage,
+            ]);
+        }
 
         session()->flash('success', "Orden {$order->numero_ticket} entregada con éxito.");
         $this->cerrarCheckout();
@@ -67,6 +70,7 @@ class Ordenes extends Component
         $this->selectedOrderId = null;
         $this->firma_checkout = '';
         $this->mostrarModalCheckout = false;
+        $this->enviarWhatsapp = true;
         $this->dispatch('clear-checkout-sig-pad');
     }
 

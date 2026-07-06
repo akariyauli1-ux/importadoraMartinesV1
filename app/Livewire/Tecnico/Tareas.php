@@ -20,6 +20,7 @@ class Tareas extends Component
     public $diagFields = [];
     public $observaciones = '';
     public $mostrarReporte = false;
+    public $enviarWhatsappDiagnostico = true;
 
     public function selectOrden($id)
     {
@@ -131,15 +132,17 @@ class Tareas extends Component
             ]);
 
             $cliente = $order->cliente;
-            $waMessage = "Hola {$cliente->nombre}, tu equipo {$order->marca} {$order->modelo} ya tiene un diagnóstico y presupuesto estimado de Bs. {$this->costo_estimado}. " .
-                "Por motivos legales, requerimos tu firma de aprobación digital para poder iniciar la reparación. Aprueba el presupuesto aquí: " . 
-                route('cliente.orden', $order->numero_ticket);
+            if ($this->enviarWhatsappDiagnostico) {
+                $waMessage = "Hola {$cliente->nombre}, tu equipo {$order->marca} {$order->modelo} ya tiene un diagnóstico y presupuesto estimado de Bs. {$this->costo_estimado}. " .
+                    "Por motivos legales, requerimos tu firma de aprobación digital para poder iniciar la reparación. Aprueba el presupuesto aquí: " . 
+                    route('cliente.orden', $order->numero_ticket);
 
-            MensajeWhatsappPendiente::create([
-                'orden_reparacion_id' => $order->id,
-                'telefono' => $cliente->telefono,
-                'mensaje' => $waMessage,
-            ]);
+                MensajeWhatsappPendiente::create([
+                    'orden_reparacion_id' => $order->id,
+                    'telefono' => $cliente->telefono,
+                    'mensaje' => $waMessage,
+                ]);
+            }
 
             DB::commit();
 

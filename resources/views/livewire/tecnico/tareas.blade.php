@@ -150,6 +150,12 @@
                                     💾 Guardar Diagnóstico y Enviar Presupuesto
                                 </button>
                             </div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 8px 12px; background-color: #f8f9fa; border-radius: 6px;">
+                                <input type="checkbox" wire:model="enviarWhatsappDiagnostico" id="chk-whatsapp-diag" style="width: 16px; height: 16px; cursor: pointer;">
+                                <label for="chk-whatsapp-diag" style="font-size: 0.8rem; cursor: pointer; color: var(--color-text-dark); margin: 0;">
+                                    Enviar presupuesto por WhatsApp al cliente
+                                </label>
+                            </div>
                         </form>
 
                         @if($mostrarReporte)
