@@ -80,7 +80,11 @@
                                     @endswitch
                                 </td>
                                 <td>
-                                    <span style="font-size: 1.2rem; color: green;" title="Firmado">✍️ Si</span>
+                                    @if($ord->firma_checkin_base64)
+                                        <span style="font-size: 1.2rem; color: green;" title="Firmado">✍️ Si</span>
+                                    @else
+                                        <span style="font-size: 1.2rem; color: red;" title="Pendiente">❌ No</span>
+                                    @endif
                                 </td>
                                 <td>
                                     @if($ord->firma_checkout_base64)
@@ -94,7 +98,7 @@
                                         <a href="{{ route('cliente.orden', $ord->numero_ticket) }}" target="_blank" class="btn btn-light" style="padding: 6px 12px; width: auto; font-size: 0.85rem;">
                                             👁️ Ver Ficha
                                         </a>
-                                        @if($ord->estado === 'reparado')
+                                        @if(in_array($ord->estado, ['reparado', 'diagnosticado', 'por_diagnosticar']))
                                             <button wire:click="abrirCheckout({{ $ord->id }})" class="btn btn-primary" style="padding: 6px 12px; width: auto; font-size: 0.85rem;">
                                                 📦 Entregar (Check-out)
                                             </button>
