@@ -153,6 +153,9 @@
 
                 <div class="topbar-actions">
                     @auth
+                        @if(auth()->user()->hasAnyRole(['Administrador', 'Técnico', 'Recepcionista']))
+                            @livewire('notificaciones-repuesto')
+                        @endif
                         @if(auth()->user()->sucursal)
                             <span class="branch-badge">
                                 📍 {{ auth()->user()->sucursal->nombre }}

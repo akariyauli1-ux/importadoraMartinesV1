@@ -32,6 +32,8 @@ class Solicitudes extends Component
             'almacenista_id' => Auth::id(),
             'observaciones_almacenista' => $this->observaciones_respuesta,
             'fecha_respuesta' => now(),
+            'leido_por_solicitante' => false,
+            'confirmado_recibido' => false,
         ]);
 
         session()->flash('success', 'Solicitud respondida correctamente.');
@@ -54,6 +56,7 @@ class Solicitudes extends Component
         $solicitudes = $query->orderBy('created_at', 'desc')->get();
 
         $enviados = SolicitudRepuesto::where('sucursal_id', $sucursalId)->where('estado', 'enviado')->count();
+        $recibidos = SolicitudRepuesto::where('sucursal_id', $sucursalId)->where('estado', 'enviado')->where('confirmado_recibido', true)->count();
         $agotados = SolicitudRepuesto::where('sucursal_id', $sucursalId)->where('estado', 'agotado')->count();
         $noExisten = SolicitudRepuesto::where('sucursal_id', $sucursalId)->where('estado', 'no_existe')->count();
         $pendientes = SolicitudRepuesto::where('sucursal_id', $sucursalId)->where('estado', 'pendiente')->count();
@@ -77,6 +80,7 @@ class Solicitudes extends Component
         return view('livewire.almacen.solicitudes', [
             'solicitudes' => $solicitudes,
             'enviados' => $enviados,
+            'recibidos' => $recibidos,
             'agotados' => $agotados,
             'noExisten' => $noExisten,
             'pendientes' => $pendientes,

@@ -17,6 +17,9 @@ class SolicitudRepuesto extends Model
         'cantidad',
         'urgencia',
         'estado',
+        'confirmado_recibido',
+        'fecha_confirmacion',
+        'leido_por_solicitante',
         'observaciones_solicitante',
         'observaciones_almacenista',
         'fecha_respuesta',
@@ -24,6 +27,9 @@ class SolicitudRepuesto extends Model
 
     protected $casts = [
         'fecha_respuesta' => 'datetime',
+        'fecha_confirmacion' => 'datetime',
+        'confirmado_recibido' => 'boolean',
+        'leido_por_solicitante' => 'boolean',
     ];
 
     public function sucursal()

@@ -51,7 +51,9 @@
                                                 <span class="badge badge-yellow">Pendiente</span>
                                                 @break
                                             @case('enviado')
-                                                <span class="badge badge-green">Enviado</span>
+                                                <span class="badge badge-green">
+                                                    {{ $sol->confirmado_recibido ? '✅ Recibido' : 'Enviado' }}
+                                                </span>
                                                 @break
                                             @case('agotado')
                                                 <span class="badge badge-red">Agotado</span>
@@ -163,6 +165,21 @@
                                         <td style="font-weight: 600;">Fecha respuesta</td>
                                         <td>{{ $solSel->fecha_respuesta ? $solSel->fecha_respuesta->format('d/m/Y H:i') : 'N/A' }}</td>
                                     </tr>
+                                    @if($solSel->estado === 'enviado')
+                                    <tr>
+                                        <td style="font-weight: 600;">Recepcion confirmada</td>
+                                        <td>
+                                            @if($solSel->confirmado_recibido)
+                                                <span style="color: #28a745; font-weight: 600;">✅ Confirmado</span>
+                                                <span style="font-size: 0.75rem; color: var(--color-text-light-muted); display: block;">
+                                                    {{ $solSel->fecha_confirmacion ? $solSel->fecha_confirmacion->format('d/m/Y H:i') : '' }}
+                                                </span>
+                                            @else
+                                                <span style="color: #ff9800;">⏳ Pendiente de confirmación</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endif
                                 </tbody>
                             </table>
                             @if($solSel->observaciones_almacenista)
@@ -189,8 +206,8 @@
                 <!-- Summary Cards -->
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
                     <div style="background-color: #d4edda; border-radius: 8px; padding: 15px; text-align: center;">
-                        <span style="font-size: 1.5rem; font-weight: 800; color: #155724; display: block;">{{ $enviados }}</span>
-                        <span style="font-size: 0.78rem; color: #155724; font-weight: 600;">Repuestos Enviados</span>
+                        <span style="font-size: 1.5rem; font-weight: 800; color: #155724; display: block;">{{ $enviados }} / {{ $recibidos }}</span>
+                        <span style="font-size: 0.78rem; color: #155724; font-weight: 600;">Enviados / Recibidos</span>
                     </div>
                     <div style="background-color: #f8d7da; border-radius: 8px; padding: 15px; text-align: center;">
                         <span style="font-size: 1.5rem; font-weight: 800; color: #721c24; display: block;">{{ $noExisten }}</span>
