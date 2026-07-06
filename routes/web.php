@@ -57,6 +57,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/tecnico/tareas', \App\Livewire\Tecnico\Tareas::class)->name('tecnico.tareas');
         });
 
+        // Almacenista Routes
+        Route::middleware(['role:Almacenista'])->group(function () {
+            Route::get('/almacen/solicitudes', \App\Livewire\Almacen\Solicitudes::class)->name('almacen.solicitudes');
+        });
+
     });
 });
 

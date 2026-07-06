@@ -114,6 +114,14 @@
                             </a>
                         </li>
                     @endif
+
+                    @if(auth()->user()->hasRole('Almacenista'))
+                        <li class="nav-item">
+                            <a href="{{ route('almacen.solicitudes') }}" class="nav-link {{ request()->routeIs('almacen.solicitudes') ? 'active' : '' }}" @click="mobileSidebarOpen = false">
+                                📦 Gestión de Repuestos
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </nav>
 
@@ -183,6 +191,9 @@
     </div>
 
     <!-- FontAwesome or other icons if needed can be loaded, but simple emojis look great and load instantly. -->
+    @if(auth()->user()->hasAnyRole(['Administrador', 'Técnico', 'Recepcionista']))
+        @livewire('solicitar-repuesto')
+    @endif
     @livewireScripts
 </body>
 </html>

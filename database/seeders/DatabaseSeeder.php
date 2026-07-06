@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $roleAdmin = Role::create(['name' => 'Administrador']);
         $roleTecnico = Role::create(['name' => 'Técnico']);
         $roleRecepcionista = Role::create(['name' => 'Recepcionista']);
+        $roleAlmacenista = Role::create(['name' => 'Almacenista']);
 
         // 2. Create Default company config
         ConfiguracionEmpresa::create([
@@ -87,5 +88,18 @@ class DatabaseSeeder extends Seeder
             'sucursal_id' => $sucursal->id,
         ]);
         $recepcionista->assignRole($roleRecepcionista);
+
+        // 8. Create Almacenista for Sede Central
+        $almacenista = User::create([
+            'name' => 'Roberto',
+            'apellido_paterno' => 'Flores',
+            'apellido_materno' => 'Quispe',
+            'carnet_identidad' => '111111',
+            'email' => 'roberto.almacen@importadoramartinez.com',
+            'password' => Hash::make('flores'),
+            'password_changed' => false,
+            'sucursal_id' => $sucursal->id,
+        ]);
+        $almacenista->assignRole($roleAlmacenista);
     }
 }
