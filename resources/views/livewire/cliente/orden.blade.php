@@ -147,6 +147,12 @@
                         <strong style="font-size: 1.3rem; color: var(--color-red); display: block;">Bs. {{ number_format($order->costo_estimado, 2) }}</strong>
                     </div>
 
+                    <div>
+                        <a href="{{ route('cliente.orden.pdf', $order->numero_ticket) }}" class="btn btn-secondary" style="width: auto; padding: 8px 18px; font-size: 0.85rem;">
+                            Descargar Ficha Tecnica (PDF)
+                        </a>
+                    </div>
+
                 </div>
             </div>
         @endif

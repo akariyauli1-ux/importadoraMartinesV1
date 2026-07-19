@@ -15,7 +15,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" style="color: var(--color-text-dark);">Logotipo Corporativo (aparece en el Sistema)</label>
+                        <label class="form-label" style="color: var(--color-text-dark);">Logotipo Corporativo (aparece en PDFs y Sistema)</label>
                         <input wire:model="logo" type="file" class="form-control form-control-light" style="padding: 6px;" accept="image/*">
                         <span style="font-size: 0.78rem; color: var(--color-text-light-muted); display: block; margin-top: 4px;">
                             Subir archivo JPG o PNG de peso menor a 2MB (Regla #14).

@@ -102,6 +102,7 @@
                                                     <th style="text-align: center;">Estado</th>
                                                     <th style="text-align: center;">Días</th>
                                                     <th style="text-align: right;">Costo Est.</th>
+                                                    <th style="text-align: center; width: 50px;">Ficha</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -145,6 +146,9 @@
                                                             <span style="font-size: 0.7rem; color: var(--color-text-light-muted);">días</span>
                                                         </td>
                                                         <td style="text-align: right; font-weight: 600;">Bs. {{ number_format($orden->costo_estimado ?? 0, 2) }}</td>
+                                                        <td style="text-align: center;">
+                                                            <a href="{{ route('cliente.orden', $orden->numero_ticket) }}" target="_blank" title="Ver Ficha Tecnica" style="color: var(--color-red); text-decoration: none; font-weight: 700; font-size: 1rem;">&#128196;</a>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -233,6 +237,7 @@
                                 <th style="text-align: center;">Días</th>
                                 <th style="text-align: center;">Ingresó</th>
                                 <th style="text-align: right;">Costo Est.</th>
+                                <th style="text-align: center; width: 50px;">Ficha</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -274,6 +279,9 @@
                                         {{ $orden->created_at->format('d/m/Y') }}
                                     </td>
                                     <td style="text-align: right; font-weight: 600;">Bs. {{ number_format($orden->costo_estimado ?? 0, 2) }}</td>
+                                    <td style="text-align: center;">
+                                        <a href="{{ route('cliente.orden', $orden->numero_ticket) }}" target="_blank" title="Ver Ficha Tecnica" style="color: var(--color-red); text-decoration: none; font-weight: 700; font-size: 1rem;">&#128196;</a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -305,6 +313,7 @@
                                 <th style="text-align: center;">Días totales</th>
                                 <th style="text-align: center;">Entregado el</th>
                                 <th style="text-align: right;">Costo Est.</th>
+                                <th style="text-align: center; width: 50px;">Ficha</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -327,6 +336,9 @@
                                         {{ $orden->updated_at->format('d/m/Y') }}
                                     </td>
                                     <td style="text-align: right; font-weight: 600;">Bs. {{ number_format($orden->costo_estimado ?? 0, 2) }}</td>
+                                    <td style="text-align: center;">
+                                        <a href="{{ route('cliente.orden', $orden->numero_ticket) }}" target="_blank" title="Ver Ficha Tecnica" style="color: var(--color-red); text-decoration: none; font-weight: 700; font-size: 1rem;">&#128196;</a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
