@@ -7,8 +7,8 @@
             <h3 style="font-weight: 700; color: var(--color-text-dark); margin: 0;">📊 Rendimiento del Taller</h3>
             <span style="font-size: 0.85rem; color: var(--color-text-light-muted);">Comparativa por sucursal y técnico</span>
         </div>
-        <div style="display: flex; gap: 8px; align-items: center;">
-            <span style="font-size: 0.82rem; color: var(--color-text-light-muted);">Período:</span>
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <span style="font-size: 0.82rem; color: var(--color-text-light-muted); white-space: nowrap;">Período:</span>
             @foreach([7 => '7 días', 15 => '15 días', 30 => '30 días', 90 => '90 días', 365 => '1 año'] as $val => $label)
                 <button wire:click="$set('filtroDias', {{ $val }})"
                     style="padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer;
@@ -24,7 +24,7 @@
     <!-- ===== GRAFICO 1: Sucursales comparativa ===== -->
     <div class="card" style="margin-bottom: 25px;">
         <div class="card-header"><h4 class="card-title">🏢 Órdenes por Sucursal: Entregadas vs En Progreso</h4></div>
-        <div class="card-body"><canvas id="chartSucursales" height="80"></canvas></div>
+        <div class="card-body" style="max-height: 300px;"><canvas id="chartSucursales" height="60"></canvas></div>
     </div>
 
     <!-- ===== TABLA 1: Ranking Sucursales ===== -->
@@ -81,14 +81,14 @@
     </div>
 
     <!-- ===== GRAFICO 2: Tasa de éxito por sucursal ===== -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-bottom: 25px;">
         <div class="card">
             <div class="card-header"><h4 class="card-title">📈 Tasa de Éxito por Sucursal (%)</h4></div>
-            <div class="card-body"><canvas id="chartTasaExito" height="100"></canvas></div>
+            <div class="card-body" style="max-height: 350px;"><canvas id="chartTasaExito" height="60"></canvas></div>
         </div>
         <div class="card">
             <div class="card-header"><h4 class="card-title">🔧 Órdenes por Técnico (Top 15)</h4></div>
-            <div class="card-body"><canvas id="chartTecnicos" height="100"></canvas></div>
+            <div class="card-body" style="max-height: 350px;"><canvas id="chartTecnicos" height="60"></canvas></div>
         </div>
     </div>
 
@@ -176,7 +176,8 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { position: 'bottom' } },
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'Órdenes por Sucursal' } },
                     scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
                 }
             });
@@ -201,7 +202,10 @@
                 options: {
                     indexAxis: 'y',
                     responsive: true,
-                    plugins: { legend: { display: false } },
+                    maintainAspectRatio: false,
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.8,
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Tasa de Éxito por Sucursal' } },
                     scales: { x: { max: 100, beginAtZero: true, ticks: { callback: v => v + '%' } } }
                 }
             });
@@ -224,7 +228,10 @@
                 options: {
                     indexAxis: 'y',
                     responsive: true,
-                    plugins: { legend: { position: 'bottom' } },
+                    maintainAspectRatio: false,
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.8,
+                    plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'Órdenes por Técnico' } },
                     scales: { x: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 } }, y: { stacked: true } }
                 }
             });

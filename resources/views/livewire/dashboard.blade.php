@@ -152,8 +152,8 @@
         <div class="card-header">
             <h4 class="card-title">📊 Órdenes por Estado</h4>
         </div>
-        <div class="card-body">
-            <canvas id="chartEstados" height="100"></canvas>
+        <div class="card-body" style="max-height: 280px;">
+            <canvas id="chartEstados" height="60"></canvas>
         </div>
     </div>
 
@@ -164,12 +164,12 @@
             <!-- Bar: Órdenes por Sucursal -->
             <div class="card">
                 <div class="card-header"><h4 class="card-title">🏢 Órdenes por Sucursal</h4></div>
-                <div class="card-body"><canvas id="chartSucursales" height="120"></canvas></div>
+                <div class="card-body" style="max-height: 280px;"><canvas id="chartSucursales" height="60"></canvas></div>
             </div>
             <!-- Doughnut: Órdenes por Categoría -->
             <div class="card">
                 <div class="card-header"><h4 class="card-title">📱 Órdenes por Categoría</h4></div>
-                <div class="card-body"><canvas id="chartCategorias" height="120"></canvas></div>
+                <div class="card-body" style="max-height: 280px;"><canvas id="chartCategorias" height="60"></canvas></div>
             </div>
         @endif
 
@@ -177,12 +177,12 @@
             <!-- Bar: Carga por Técnico -->
             <div class="card">
                 <div class="card-header"><h4 class="card-title">🔧 Carga de Trabajo por Técnico</h4></div>
-                <div class="card-body"><canvas id="chartTecnicosCarga" height="120"></canvas></div>
+                <div class="card-body" style="max-height: 280px;"><canvas id="chartTecnicosCarga" height="60"></canvas></div>
             </div>
             <!-- Bar: Órdenes por Categoría en Sede -->
             <div class="card">
                 <div class="card-header"><h4 class="card-title">📱 Órdenes por Categoría en Sede</h4></div>
-                <div class="card-body"><canvas id="chartCatSede" height="120"></canvas></div>
+                <div class="card-body" style="max-height: 280px;"><canvas id="chartCatSede" height="60"></canvas></div>
             </div>
         @endif
 
@@ -190,12 +190,12 @@
             <!-- Doughnut: Mis tareas -->
             <div class="card">
                 <div class="card-header"><h4 class="card-title">⚙️ Distribución de Mis Tareas</h4></div>
-                <div class="card-body"><canvas id="chartMisTareas" height="120"></canvas></div>
+                <div class="card-body" style="max-height: 280px;"><canvas id="chartMisTareas" height="60"></canvas></div>
             </div>
             <!-- Bar: Tareas por tipo -->
             <div class="card">
                 <div class="card-header"><h4 class="card-title">📋 Tareas por Tipo</h4></div>
-                <div class="card-body"><canvas id="chartCatSede" height="120"></canvas></div>
+                <div class="card-body" style="max-height: 280px;"><canvas id="chartCatSede" height="60"></canvas></div>
             </div>
         @endif
 
@@ -203,12 +203,12 @@
             <!-- Bar: Ingresos de la semana -->
             <div class="card">
                 <div class="card-header"><h4 class="card-title">📥 Ingresos de Esta Semana</h4></div>
-                <div class="card-body"><canvas id="chartRecepcionSemanal" height="120"></canvas></div>
+                <div class="card-body" style="max-height: 280px;"><canvas id="chartRecepcionSemanal" height="60"></canvas></div>
             </div>
             <!-- Doughnut: Categorías -->
             <div class="card">
                 <div class="card-header"><h4 class="card-title">📱 Categorías en Sede</h4></div>
-                <div class="card-body"><canvas id="chartCatSede" height="120"></canvas></div>
+                <div class="card-body" style="max-height: 280px;"><canvas id="chartCatSede" height="60"></canvas></div>
             </div>
         @endif
 
@@ -216,12 +216,12 @@
             <!-- Doughnut: Solicitudes -->
             <div class="card">
                 <div class="card-header"><h4 class="card-title">📦 Solicitudes de Repuestos</h4></div>
-                <div class="card-body"><canvas id="chartSolicitudes" height="120"></canvas></div>
+                <div class="card-body" style="max-height: 280px;"><canvas id="chartSolicitudes" height="60"></canvas></div>
             </div>
             <!-- Bar: Top repuestos -->
             <div class="card">
                 <div class="card-header"><h4 class="card-title">🔝 Repuestos Más Solicitados</h4></div>
-                <div class="card-body"><canvas id="chartTopRepuestos" height="120"></canvas></div>
+                <div class="card-body" style="max-height: 280px;"><canvas id="chartTopRepuestos" height="60"></canvas></div>
             </div>
         @endif
     </div>
@@ -231,7 +231,7 @@
     <div style="display: grid; grid-template-columns: 1fr; gap: 25px; margin-top: 25px;">
         <div class="card">
             <div class="card-header"><h4 class="card-title">📈 Ingresos vs Entregados (Últimos 6 meses)</h4></div>
-            <div class="card-body"><canvas id="chartMensual" height="100"></canvas></div>
+            <div class="card-body" style="max-height: 250px;"><canvas id="chartMensual" height="60"></canvas></div>
         </div>
     </div>
     @endif
@@ -241,7 +241,7 @@
     <div style="display: grid; grid-template-columns: 1fr; gap: 25px; margin-top: 25px;">
         <div class="card">
             <div class="card-header"><h4 class="card-title">📈 Tareas Asignadas vs Completadas (Últimos 6 meses)</h4></div>
-            <div class="card-body"><canvas id="chartTecnicoMensual" height="100"></canvas></div>
+            <div class="card-body" style="max-height: 250px;"><canvas id="chartTecnicoMensual" height="60"></canvas></div>
         </div>
     </div>
     @endif
@@ -318,7 +318,8 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { display: false } },
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Órdenes por Estado' } },
                     scales: {
                         y: { beginAtZero: true, ticks: { stepSize: 1 } }
                     }
@@ -346,7 +347,8 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { display: false } },
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Órdenes por Sucursal' } },
                     scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
                 }
             });
@@ -372,8 +374,10 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
-                        legend: { position: 'bottom', labels: { padding: 15, usePointStyle: true } }
+                        legend: { position: 'bottom', labels: { padding: 15, usePointStyle: true } },
+                        title: { display: true, text: 'Órdenes por Categoría' }
                     }
                 }
             });
@@ -412,7 +416,8 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { position: 'bottom' } },
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'Ingresos vs Entregados' } },
                     scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
                 }
             });
@@ -438,7 +443,8 @@
                     },
                     options: {
                         responsive: true,
-                        plugins: { legend: { position: 'bottom' } },
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'Carga de Trabajo por Técnico' } },
                         scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, ticks: { stepSize: 1 } } }
                     }
                 });
@@ -468,7 +474,8 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { display: false } },
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Órdenes por Categoría' } },
                     scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
                 }
             });
@@ -497,7 +504,8 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true } } }
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true } }, title: { display: true, text: 'Distribución de Mis Tareas' } }
                 }
             });
         })();
@@ -536,7 +544,8 @@
                     },
                     options: {
                         responsive: true,
-                        plugins: { legend: { position: 'bottom' } },
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'Tareas Asignadas vs Completadas' } },
                         scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
                     }
                 });
@@ -564,7 +573,8 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { display: false } },
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Ingresos de Esta Semana' } },
                     scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
                 }
             });
@@ -593,7 +603,8 @@
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true } } }
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { padding: 12, usePointStyle: true } }, title: { display: true, text: 'Solicitudes de Repuestos' } }
                 }
             });
         })();
@@ -619,7 +630,8 @@
                 options: {
                     indexAxis: 'y',
                     responsive: true,
-                    plugins: { legend: { display: false } },
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, title: { display: true, text: 'Repuestos Más Solicitados' } },
                     scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }
                 }
             });
