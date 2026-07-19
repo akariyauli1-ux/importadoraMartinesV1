@@ -81,6 +81,11 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('gerente.seguimiento') }}" class="nav-link {{ request()->routeIs('gerente.seguimiento') ? 'active' : '' }}" @click="mobileSidebarOpen = false">
+                                🔍 Seguimiento Técnicos
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('gerente.branding') }}" class="nav-link {{ request()->routeIs('gerente.branding') ? 'active' : '' }}" @click="mobileSidebarOpen = false">
                                 🎨 Identidad / Branding
                             </a>
