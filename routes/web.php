@@ -69,4 +69,3 @@ Route::middleware(['auth'])->group(function () {
 
 // 4. Public Routes (Client view for tracking and approving quotes)
 Route::get('/cliente/orden/{numero_ticket}', \App\Livewire\Cliente\Orden::class)->name('cliente.orden');
-Route::get('/cliente/orden/{numero_ticket}/pdf', [\App\Http\Controllers\PdfController::class, 'download'])->name('cliente.orden.pdf');
