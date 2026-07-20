@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 class Tareas extends Component
 {
     public $selectedOrderId = null;
+    public $selectedOrderData = null;
     public $costo_estimado = 0.00;
     
     public $diagFields = [];
@@ -27,6 +28,14 @@ class Tareas extends Component
         $this->selectedOrderId = $id;
         $this->mostrarReporte = false;
         $order = OrdenReparacion::findOrFail($id);
+        $this->selectedOrderData = [
+            'marca' => $order->marca,
+            'modelo' => $order->modelo,
+            'numero_ticket' => $order->numero_ticket,
+            'problema_reportado' => $order->problema_reportado,
+            'estado' => $order->estado,
+            'categoria' => $order->categoria,
+        ];
         $this->costo_estimado = $order->costo_estimado;
         $this->diagFields = [];
         $this->observaciones = '';
@@ -148,6 +157,7 @@ class Tareas extends Component
 
             session()->flash('success', 'Diagnóstico y presupuesto guardados. Notificación encolada al cliente.');
             $this->selectedOrderId = null;
+            $this->selectedOrderData = null;
             $this->mostrarReporte = false;
 
         } catch (\Exception $e) {
@@ -183,8 +193,7 @@ class Tareas extends Component
     {
         $tecnico = Auth::user();
         
-        $misTareas = OrdenReparacion::with('cliente')
-            ->where('tecnico_id', $tecnico->id)
+        $misTareas = OrdenReparacion::where('tecnico_id', $tecnico->id)
             ->whereIn('estado', ['por_diagnosticar', 'diagnosticado', 'esperando_aprobacion', 'en_reparacion', 'reparado'])
             ->orderBy('estado', 'asc')
             ->get();

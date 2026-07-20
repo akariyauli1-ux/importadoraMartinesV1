@@ -85,20 +85,17 @@
                 <h4 class="card-title">Formulario de Diagnóstico</h4>
             </div>
             <div class="card-body">
-                @if($selectedOrderId)
-                    @php
-                        $ordSel = \App\Models\OrdenReparacion::find($selectedOrderId);
-                    @endphp
+                @if($selectedOrderId && $selectedOrderData)
                     <div style="background-color: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 20px; border-left: 3px solid var(--color-red);">
-                        <strong style="color: var(--color-text-dark);">Equipo Seleccionado:</strong> {{ $ordSel->marca }} {{ $ordSel->modelo }} (Ticket: {{ $ordSel->numero_ticket }})
-                        <br><span style="font-size: 0.85rem; color: var(--color-text-light-muted);">Problema reportado: {{ $ordSel->problema_reportado }}</span>
+                        <strong style="color: var(--color-text-dark);">Equipo Seleccionado:</strong> {{ $selectedOrderData['marca'] }} {{ $selectedOrderData['modelo'] }} (Ticket: {{ $selectedOrderData['numero_ticket'] }})
+                        <br><span style="font-size: 0.85rem; color: var(--color-text-light-muted);">Problema reportado: {{ $selectedOrderData['problema_reportado'] }}</span>
                     </div>
 
-                    @if($ordSel->estado === 'por_diagnosticar')
+                    @if($selectedOrderData['estado'] === 'por_diagnosticar')
                         <form wire:submit.prevent="saveDiagnostico">
                             
                             <h5 style="color: var(--color-text-dark); margin-bottom: 15px; border-bottom: 1px solid var(--border-light); padding-bottom: 5px; font-weight: 700;">
-                                Checklist Técnico (Categoría: {{ strtoupper($ordSel->categoria) }})
+                                Checklist Técnico (Categoría: {{ strtoupper($selectedOrderData['categoria']) }})
                             </h5>
 
                             <!-- Dynamic radio fields -->
@@ -162,7 +159,7 @@
                             <div style="margin-top: 25px; border: 2px solid var(--color-red); border-radius: 8px; overflow: hidden;">
                                 <div style="background-color: var(--color-red); color: #fff; padding: 12px 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: center;">
                                     <span>📋 Reporte de Detalle Técnico</span>
-                                    <span style="font-size: 0.8rem; font-weight: 400;">Ticket: {{ $ordSel->numero_ticket }}</span>
+                                    <span style="font-size: 0.8rem; font-weight: 400;">Ticket: {{ $selectedOrderData['numero_ticket'] }}</span>
                                 </div>
                                 <div style="padding: 16px;">
                                     <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
@@ -173,18 +170,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @php
-                                                $malEstado = [];
-                                                $buenEstado = [];
-                                                $noCorresponde = [];
-                                                $sinEvaluar = [];
-                                                foreach($diagFields as $f => $v) {
-                                                    if ($v === 'mal_estado') $malEstado[] = $f;
-                                                    elseif ($v === 'buen_estado') $buenEstado[] = $f;
-                                                    elseif ($v === 'no_corresponde') $noCorresponde[] = $f;
-                                                    else $sinEvaluar[] = $f;
-                                                }
-                                            @endphp
+                                            @php $malEstado = array_keys(array_filter($diagFields, function($v) { return $v === 'mal_estado'; })); @endphp
                                             @foreach($diagFields as $f => $v)
                                                 <tr style="border-bottom: 1px solid #f1f3f5;">
                                                     <td style="padding: 8px 6px; font-weight: 600; text-transform: capitalize;">{{ str_replace('_', ' ', $f) }}</td>
@@ -256,11 +242,11 @@
                                 </tbody>
                             </table>
                             
-                            @if($ordSel->estado === 'esperando_aprobacion')
+                            @if($selectedOrderData['estado'] === 'esperando_aprobacion')
                                 <div class="alert alert-warning" style="margin-top: 10px;">
                                     <span>Presupuesto enviado. Esperando que el cliente firme la aprobación digital.</span>
                                 </div>
-                            @elseif($ordSel->estado === 'en_reparacion')
+                            @elseif($selectedOrderData['estado'] === 'en_reparacion')
                                 <div class="alert alert-success" style="margin-top: 10px;">
                                     <span>Presupuesto aprobado por el cliente. En proceso de reparación activa.</span>
                                 </div>
